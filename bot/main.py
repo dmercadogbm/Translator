@@ -4,10 +4,31 @@ import slackConn
 
 from deep_translator import GoogleTranslator
 from deep_translator.exceptions import LanguageNotSupportedException
-from getmac import get_mac_address as gma
 
 
-def checkacronymus(target_leng):
+def translate(text: str, target_leng: str) -> str:
+    """
+    It takes a string of text and a target language and returns the translated text
+    
+    :param text: The text you want to translate
+    :type text: str
+    :param target_leng: The language you want to translate to
+    :type target_leng: str
+    :return: A string
+    """
+    translator = GoogleTranslator(
+        source='auto', target=target_leng)
+    result = translator.translate(text)
+    return (result)
+
+
+def checkAcronyms(target_leng):
+    """
+    It checks if the language is supported by the translator
+    
+    :param target_leng: The language you want to translate to
+    :return: a boolean value.
+    """
     try:
         translate('prueba', target_leng)
     except LanguageNotSupportedException:
@@ -15,18 +36,16 @@ def checkacronymus(target_leng):
     return True
 
 
-def translate(text: str, target_leng: str) -> str:
-    translator = GoogleTranslator(
-        source='auto', target=target_leng)
-    result = translator.translate(text)
-    return (result)
-
-
 def translateProcess():
+    """
+    It takes an acronym as input, checks if it's in the list of acronyms, if it is, it takes a text as
+    input, checks if it contains the string 'xx', if it doesn't, it translates the text and posts it to
+    slack, if it does, it starts the function again
+    """
 
-    target_leng=input('Type an acronym:')
+    target_leng = input('Type an acronym:')
     while True:
-        if checkacronymus(target_leng) == True:
+        if checkAcronyms(target_leng) == True:
             text = input('text:')
             if 'xx' not in text:
                 print(translate(text, target_leng))
@@ -39,9 +58,7 @@ def translateProcess():
             translateProcess()
 
 
-
+# It's a way to make sure that the code is only executed when the file is run directly.
 if __name__ == '__main__':
     os.system('cls')
-    translateProcess()
-else:
     translateProcess()
