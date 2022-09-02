@@ -1,10 +1,13 @@
 import os
 import requests
 import slackConn
+import wifiStatus
 
 from deep_translator import GoogleTranslator
 from deep_translator.exceptions import LanguageNotSupportedException
 from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES
+from sharepoint_credentials import verifier
+from urllib.error import URLError
 
 
 def translate(text: str, target_leng: str) -> str:
@@ -36,7 +39,7 @@ def checkAcronyms(target_leng):
         return False
     return True
 
-
+@verifier
 def translateProcess():
     """
     It takes an acronym as input, checks if it's in the list of acronyms, if it is, it takes a text as
@@ -45,7 +48,7 @@ def translateProcess():
     """
     if __name__ == '__main__':
         for key, value in GOOGLE_LANGUAGES_TO_CODES.items():
-            print(key," : ", value)
+            print(key,"->", value)
 
     target_leng = input('Type an acronym:')
     while True:
@@ -54,7 +57,7 @@ def translateProcess():
             if 'xx' not in text:
                 print(translate(text, target_leng))
                 slack = slackConn.connection()
-                requests.post(slack[0], json={'text': slack[1]})
+                requests.post(slack[0], json={'text': slack[1]})   
             else:
                 translateProcess()
         else:
@@ -62,7 +65,14 @@ def translateProcess():
             translateProcess()
 
 
-# It's a way to make sure that the code is only executed when the file is run directly.
+# It's checking if the file is being run as a script or imported as a module.
 if __name__ == '__main__':
-    os.system('cls')
-    translateProcess()
+    # It's checking if there's an internet connection, if there isn't, it raises an exception.
+    try:
+        if wifiStatus.connStatus() == False:
+            raise URLError(reason='No Internet connection')
+        else:
+            os.system('cls')
+            translateProcess()
+    except Exception as e:
+        print(e)

@@ -3,7 +3,7 @@ import unittest
 import main as base
 import slackConn as conn
 import requests
-
+import wifiStatus
 
 
 # This class tests the translate function, the checkAcronyms function, and the connection function.
@@ -39,6 +39,13 @@ class TranslateTestCase(unittest.TestCase):
         result = requests.post(slack[0], json={'text': slack[1]})
         self.assertEqual(result.text, 'ok')
 
+    def test_wifi_status(self):
+        """
+        The function is supposed to return a boolean value of True or False depending on the status of
+        the wifi connection.
+        """
+        result = wifiStatus.connStatus()
+        self.assertEqual(result, True)
 
 # It's a way to run the tests.
 if __name__ == '__main__':
