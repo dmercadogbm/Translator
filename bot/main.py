@@ -26,10 +26,10 @@ def translate(text: str, target_leng: str) -> str:
     return (result)
 
 
-def checkAcronyms(target_leng):
+def checkAcronyms(target_leng) -> bool:
     """
     It checks if the language is supported by the translator
-
+    
     :param target_leng: The language you want to translate to
     :return: a boolean value.
     """
@@ -39,40 +39,53 @@ def checkAcronyms(target_leng):
         return False
     return True
 
-@verifier
-def translateProcess():
+
+def translateProcess() -> None:
     """
-    It takes an acronym as input, checks if it's in the list of acronyms, if it is, it takes a text as
-    input, checks if it contains the string 'xx', if it doesn't, it translates the text and posts it to
-    slack, if it does, it starts the function again
+    It takes an acronym as input, checks if it's in the dictionary, if it is, it asks for text input, if
+    the text input is #exit, it quits, if it's #back, it goes back to the beginning of the function, if
+    it's not #back or #exit, it translates the text and posts it to slack
     """
+
     if __name__ == '__main__':
         for key, value in GOOGLE_LANGUAGES_TO_CODES.items():
-            print(key,"->", value)
+            print(key, "->", value)
 
     target_leng = input('Type an acronym:')
-    while True:
-        if checkAcronyms(target_leng) == True:
-            text = input('text:').lower()
-            if 'xx' not in text:
-                print(translate(text, target_leng))
-                slack = slackConn.connection()
-                requests.post(slack[0], json={'text': slack[1]})   
+    while checkAcronyms(target_leng) == True:
+        text: str = input('text:')
+        if '#exit' in text:
+            quit()
+        if '#back' not in text:
+            translation : str = translate(text, target_leng)
+            if text == translation:
+                print('TranslationError, same meaning')
             else:
+                print(translation)
+                slack = slackConn.connection()
+                requests.post(slack[0], json={'text': slack[1]})
+        else:
+            translateProcess()
+    else:
+        print("Acronym not found, please try again")
+        translateProcess()
+
+
+@verifier
+def main() -> None:
+    """
+    It checks if the user is connected to the internet, if not, it raises an exception, if yes, it
+    clears the screen and calls the translateProcess() function
+    """
+    if __name__ == '__main__':
+        try:
+            if wifiStatus.connStatus() == False:
+                raise URLError(reason='No Internet connection')
+            else:
+                os.system('cls')
                 translateProcess()
-        else:
-            print("Acronym not found, please try again")
-            translateProcess()
+        except Exception as e:
+            print(e)
 
 
-# It's checking if the file is being run as a script or imported as a module.
-if __name__ == '__main__':
-    # It's checking if there's an internet connection, if there isn't, it raises an exception.
-    try:
-        if wifiStatus.connStatus() == False:
-            raise URLError(reason='No Internet connection')
-        else:
-            os.system('cls')
-            translateProcess()
-    except Exception as e:
-        print(e)
+main()
