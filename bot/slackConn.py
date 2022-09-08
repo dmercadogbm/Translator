@@ -1,5 +1,6 @@
 # Importing the os and requests modules.
 import os
+# Importing the requests module.
 import requests
 
 # Importing the get_mac_address function from the getmac module and renaming it to gma.
