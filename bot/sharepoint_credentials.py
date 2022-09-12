@@ -35,15 +35,18 @@ def verifier(func, credentials=None):
         """
         nonlocal verify
         res = None
-        if not verify :
-            password = input("Credenciales: ")
-            verify = getcredentials(password)
-            if verify :
-                res=func(*args,**kwargs)
+        i = 0
+        while i < 3 :
+            if not verify :
+                password = input("Credenciales: ")
+                verify = getcredentials(password)
+                if verify :
+                    res=func(*args,**kwargs)
+                else:
+                    i = i + 1
+                    print("Credenciales no validas")
             else:
-                print("Credenciales no validas")
-        else:
-            pass
+                pass
         return res
 
     return wrapper
@@ -62,7 +65,7 @@ def getcredentials(credentials:str) -> bool:
     url = 'https://gbmcorp.sharepoint.com/sites/KnowledgeManagementSW/' 
     username = Username.get_USERNAME()
     password = Username.get_PASSWORD()
-    folder_url = '/sites/KnowledgeManagementSW/Documentos%20Compartidos/DOCUMENTACION%20INTERNA/PRACTICANTES/GBM2GROW-BAQ-G2-2022/Daniel%20Mercado/Proyecto/'
+    folder_url = '/sites/KnowledgeManagementSW/Documentos%20compartidos/DOCUMENTACION%20PROYECTOS/CREDENCIALES/credenciales.txt'
     ctx_auth = AuthenticationContext(url)
     try:
         if ctx_auth.acquire_token_for_user(username, password):
@@ -83,8 +86,7 @@ def getcredentials(credentials:str) -> bool:
             # except Exception as e:
             #     print('Problem printing out library contents: ', e)
 
-            file_url_shrpt = folder_url +'credentials.txt'
-            response = File.open_binary(ctx, file_url_shrpt)
+            response = File.open_binary(ctx, folder_url)
             passwords = response.content.decode("UTF-8").split("\r\n")
             if credentials in passwords:
                 return True
