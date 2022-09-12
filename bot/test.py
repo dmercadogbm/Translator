@@ -1,6 +1,6 @@
 # It's importing the modules that are going to be used in the tests.
 import unittest
-import main as base
+import textInput as tex
 import slackConn as conn
 import requests
 import wifiStatus
@@ -14,21 +14,21 @@ class TranslateTestCase(unittest.TestCase):
         The function takes a string and a language code, and returns the string translated into the
         language specified by the language code
         """
-        result = base.translate('test', 'es')
-        self.assertEqual(result, 'prueba')
+        result = tex.translate('hello world i dont know what i supposed to print here but here we come', 'es')
+        self.assertEqual(result, 'hola mundo, no sé qué se supone que debo imprimir aquí, pero aquí vamos')
 
     def test_check_acronyms_true(self):
         """
         The function checks if the acronym is in the list of acronyms
         """
-        result = base.checkAcronyms('es')
+        result = tex.checkAcronyms('es')
         self.assertEqual(result, True)
 
     def test_check_acronyms_false(self):
         """
         This function checks if the input is an acronym
         """
-        result = base.checkAcronyms('tq')
+        result = tex.checkAcronyms('tq')
         self.assertEqual(result, False)
 
     def test_slack_conn(self):
