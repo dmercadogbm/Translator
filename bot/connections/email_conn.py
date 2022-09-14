@@ -1,26 +1,37 @@
 # Importing the smtplib module.
+import os
 import smtplib
+from email.mime.text import MIMEText
+import email.utils
 
 # Creating a connection to the SMTP server.
-mailserver = smtplib.SMTP('smtp.office365.com', 587)
+__mailserver = smtplib.SMTP('smtp.office365.com', 587)
+__user = os.getlogin()
 
 def connection():
     """
     It connects to the mail server.
     """
-    mailserver.ehlo()
-    mailserver.starttls()
-    mailserver.login('dmercado@gbm.net', 'DaMeTa026#')
+    __mailserver.ehlo()
+    __mailserver.starttls()
+    __mailserver.login('dmercado@gbm.net', 'DaMeTa026#')
 
-def sendEmail():
+def sendEmail(text :str= None, text_translation = None):
     """
     It sends an email to the address specified in the second argument, from the address specified in the
     first argument, with the subject specified in the third argument
     """
-    mailserver.sendmail('dmercado@gbm.net', 'damttrabajos@gmail.com', 'Subject: Translation succefully  translate')
+    msg = MIMEText('Base text:' + text + ' \n ' + ' Translated text:' + text_translation, _charset='UTF-8')
+    msg['Subject'] = 'Translation succefully'
+    msg['Message-ID'] = email.utils.make_msgid()
+    msg['Date'] = email.utils.formatdate(localtime=1)
+    msg['From'] = "dmercado@gbm.net"
+    msg['To'] = __user+"@gbm.net"
+    
+    __mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
 
 def closeConnection():
     """
     It closes the connection to the mail server
     """
-    mailserver.quit()
+    __mailserver.quit()

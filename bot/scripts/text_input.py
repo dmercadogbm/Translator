@@ -113,7 +113,7 @@ def translation():
                 text_tralation = translate(text, target_leng)
                 sameMeaning(text, text_tralation)
                 print(text_tralation)
-                emailConn.sendEmail()
+                emailConn.sendEmail(text, text_tralation)
             else:
                 cicle = False
                 translation()

@@ -19,7 +19,7 @@ from urllib.error import URLError
 from connections.email_conn import connection
 
 
-@verifier
+# @verifier
 def main() -> None:
     """
     If the internet is connected, clear the screen and print the available languages. If the internet is
