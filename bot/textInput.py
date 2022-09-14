@@ -1,5 +1,5 @@
 # Importing the slackConn module.
-import slackConn
+import emailConn
 # Importing the requests module.
 import requests
 # Importing the regular expression module.
@@ -96,7 +96,7 @@ def translation():
     acro_counter = True
     target_leng = ""
     while acro_counter == True:
-        target_leng = input('Target language -> ').lower()
+        target_leng = input('Target language -> ')
         if checkAcronyms(target_leng) == True:
             acro_counter = False
         else:
@@ -109,13 +109,13 @@ def translation():
             numberInText(text)
             specialInText(text)
             if '#exit' in text:
+                emailConn.closeConnection()
                 quit()
             if '#back' not in text:
                 text_tralation = translate(text, target_leng)
                 sameMeaning(text, text_tralation)
                 print(text_tralation)
-                slack = slackConn.connection()
-                requests.post(slack[0], json={'text': slack[1]})
+                emailConn.sendEmail()
             else:
                 cicle = False
                 translation()

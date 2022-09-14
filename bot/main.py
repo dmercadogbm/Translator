@@ -12,9 +12,11 @@ from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES
 from sharepoint_credentials import verifier
 # Importing the URLError class from the urllib.error module.
 from urllib.error import URLError
+# Importing the connection function from the emailConn module.
+from emailConn import connection
 
 
-@verifier
+# @verifier
 def main() -> None:
     """
     If the internet is connected, clear the screen and print the available languages. If the internet is
@@ -28,6 +30,7 @@ def main() -> None:
             if __name__ == '__main__':
                 for key, value in GOOGLE_LANGUAGES_TO_CODES.items():
                     print(key, "->", value)
+            connection()
             translation()
     except Exception as e:
         print(e)

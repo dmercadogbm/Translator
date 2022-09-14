@@ -74,18 +74,6 @@ def getcredentials(credentials:str) -> bool:
             ctx.load(web)
             ctx.execute_query()
             print('Authenticated into sharepoint: ',web.properties['Title'])
-            # try:   
-            #     folder = ctx.web.get_folder_by_server_relative_url(folder_url)
-            #     fold_names = []
-            #     sub_folders = folder.files #Replace files with folders for getting list of folders
-            #     ctx.load(sub_folders)
-            #     ctx.execute_query()
-
-            #     for s_folder in sub_folders:
-            #         fold_names.append(s_folder.properties["Name"])
-            # except Exception as e:
-            #     print('Problem printing out library contents: ', e)
-
             response = File.open_binary(ctx, folder_url)
             passwords = response.content.decode("UTF-8").split("\r\n")
             if credentials in passwords:
