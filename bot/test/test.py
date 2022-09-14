@@ -1,8 +1,7 @@
 # It's importing the modules that are going to be used in the tests.
 import unittest
-import textInput as tex
-import requests
-import wifiStatus
+import scripts.text_input as tex
+import connections.wifi_status as ws
 
 
 # This class tests the translate function, the checkAcronyms function, and the connection function.
@@ -43,7 +42,7 @@ class TranslateTestCase(unittest.TestCase):
         The function is supposed to return a boolean value of True or False depending on the status of
         the wifi connection.
         """
-        result = wifiStatus.connStatus()
+        result = ws.connStatus()
         self.assertEqual(result, True)
 
 # It's a way to run the tests.

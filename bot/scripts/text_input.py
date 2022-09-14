@@ -1,7 +1,5 @@
 # Importing the slackConn module.
-import emailConn
-# Importing the requests module.
-import requests
+import connections.email_conn as emailConn
 # Importing the regular expression module.
 import re
 
