@@ -1,8 +1,11 @@
-# Importing the smtplib module.
-import os
-import smtplib
-from email.mime.text import MIMEText
+# Importing the email.utils module.
 import email.utils
+# Importing the os module.
+import os
+# Importing the smtplib module.
+import smtplib
+# Importing the MIMEText class from the email.mime.text module.
+from email.mime.text import MIMEText
 
 # Creating a connection to the SMTP server.
 __mailserver = smtplib.SMTP('smtp.office365.com', 587)
