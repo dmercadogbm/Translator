@@ -1,24 +1,22 @@
-# Importing the slackConn module.
-import connections.email_conn as emailConn
-# Importing the regular expression module.
+# Importando las bibliotecas que se necesitan para que el programa funcione.
 import re
 
-# Importing the GoogleTranslator class from the deep_translator module.
+import connections.email_conn as emailConn
 from deep_translator import GoogleTranslator
-# Importing the dictionary GOOGLE_LANGUAGES_TO_CODES from the constants file.
 from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES
 
 
 def translate(text: str, target_leng: str) -> str:
     """
-    It takes a string of text and a target language and returns the translated text
+    Toma una cadena de texto y un idioma de destino y devuelve el texto traducido
 
-    :param text: The text you want to translate
+    :param text: El texto que quieres traducir
     :type text: str
-    :param target_leng: The language you want to translate to
+    :param target_leng: El idioma al que desea traducir
     :type target_leng: str
-    :return: A string
+    :return: str
     """
+
     translator = GoogleTranslator(
         source='auto', target=target_leng)
     return (translator.translate(text))
@@ -26,13 +24,13 @@ def translate(text: str, target_leng: str) -> str:
 
 def checkAcronyms(target_leng: str) -> bool:
     """
-    If the target language is in the values of the dictionary, or if the target language is in the keys
-    of the dictionary, then return True. Otherwise, return False
+    Comprueba si el idioma de destino está en el diccionario de idiomas y sus siglas
 
-    :param target_leng: str = The language you want to translate to
+    :param target_leng: str = El idioma al que desea traducir
     :type target_leng: str
-    :return: A boolean value.
+    :return: bool.
     """
+
     if target_leng in GOOGLE_LANGUAGES_TO_CODES.values():
         return True
     elif target_leng in GOOGLE_LANGUAGES_TO_CODES.keys():
@@ -41,30 +39,34 @@ def checkAcronyms(target_leng: str) -> bool:
         return False
 
 
+
 def numberInText(text):
     """
-    If the text is all numbers, raise a ValueError
-
-    :param text: The text to be checked
+    Si el texto es numérico, genere un ValueError.
+    
+    :param text: El texto a revisar
     """
     if text.isnumeric():
         raise ValueError(
-            '-> Text must have at least one letter not just numbers<-')
+            '-> El texto debe contener letras ademas de numeros <-')
 
 
 def specialInText(text):
     """
-    If the text contains the words #exit or #back, return False. 
+    Si el texto contiene un carácter de palabra (a-z, A-Z, 0-9, _) y un carácter especial, devuelve
+    Falso.
 
-    If the text contains any of the following special characters: , . ! + * " # / = } { [ ] ¨, and if
-    the text contains at least one letter, return False. 
+    Si el texto contiene un carácter de palabra y ningún carácter especial, devuelva True.
 
-    If the text contains any of the following special characters: , . ! + * " # / = } { [ ] ¨, and if
-    the text does not contain at least one letter, raise a ValueError.
+    Si el texto no contiene caracteres de palabra y uno o más caracteres especiales, genera un error.
 
-    :param text: The text to be analyzed
-    :return: the text that is being passed to it.
+    Si el texto no contiene caracteres de palabra ni caracteres especiales, genera un error.
+
+    Si el texto contiene un carácter de palabra y uno o más caracteres especiales, genera un error.
+
+    :param text: El texto a analizar
     """
+
     if (re.search('(#exit)', text)) or (re.search('(#back)', text)):
         return False
     elif re.search(r'[\,\.\!\+\*\"\#\/\=\}\{\[\]\¨]', text):
@@ -72,29 +74,32 @@ def specialInText(text):
             return False
         else:
             raise ValueError(
-                '-> Text must have at least one letter not just special characters <-')
+                '-> El texto debe contener letras ademas de caracteres especiales <-')
 
 
 def sameMeaning(text, text_tralation):
     """
-    If the text and the translation are the same, raise a ValueError
+    Si el texto y la traducción son iguales, genera un error.
 
-    :param text: The text to be translated
-    :param text_tralation: The text that you want to translate
+    :param text: El texto a traducir
+    :param text_tralation: El texto traducido
     """
+
     if text == text_tralation:
-        raise ValueError('-> Translation is it the same please verify text <-')
+        raise ValueError(
+            '-> Traducion igual a texto de entrada, por favor revisar <-')
 
 
 def translation():
     """
-    It takes a string as input, and if the string is not '#exit' or '#back', it will translate the
-    string to the language specified by the user, and print the translation
+    Pide un idioma, luego pide un texto para traducir, luego traduce el texto y lo envía a un correo
+    electrónico
     """
+
     acro_counter = True
     target_leng = ""
     while acro_counter == True:
-        target_leng = input('Target language -> ')
+        target_leng = input('Idioma objetivo -> ')
         if checkAcronyms(target_leng) == True:
             acro_counter = False
         else:
@@ -102,7 +107,7 @@ def translation():
 
     cicle = True
     while cicle != False:
-        text = input('Text to translate -> ')
+        text = input('Texto a traducir -> ')
         try:
             numberInText(text)
             specialInText(text)

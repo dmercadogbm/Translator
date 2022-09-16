@@ -4,3 +4,6 @@ auth/__pycache__/
 connections/__pycache__/
 scripts/__pycache__/
 tests/__pycache__/
+.vscode/
+.pytest_cache/
+.idea/

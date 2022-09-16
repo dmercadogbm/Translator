@@ -23,7 +23,7 @@ def main() -> None:
     languages, and call the connection and translation functions.
     """
     try:
-        if connStatus == False:
+        if not connStatus:
             raise URLError(reason='No Internet connection')
         else:
             os.system('cls')

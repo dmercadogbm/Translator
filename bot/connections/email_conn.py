@@ -1,33 +1,34 @@
-# Importing the email.utils module.
+# Importación de las bibliotecas necesarias para enviar un correo electrónico.
 import email.utils
-# Importing the os module.
 import os
-# Importing the smtplib module.
 import smtplib
-# Importing the MIMEText class from the email.mime.text module.
 from email.mime.text import MIMEText
 
 import auth.sharepoint_credentials as auth
-# Creating a connection to the SMTP server.
+
+# Creación de un objeto SMTP.
 __mailserver = smtplib.SMTP('smtp.office365.com', 587)
-# Getting the current user name.
+# Obtener el nombre de usuario actual.
 __user = os.getlogin()
 
 
 def connection():
+    """
+    Se conecta al servidor e inicia sesión.
+    """
     __mailserver.ehlo()
     __mailserver.starttls()
     __mailserver.login(auth.__Username.get_username(),
                        auth.__Username.get_token())
 
 
-def sendEmail(text: str = None, text_translation=None):
+def sendEmail(text: str = None, text_translation: str =None):
     """
-    It takes two strings as arguments, and sends an email with the two strings as the body of the email
+    Toma dos cadenas como argumentos y envía un correo electrónico al usuario con las dos cadenas como
+    cuerpo del correo electrónico.
     
-    :param text: str = None, text_translation=None
+    :param text: str = Ninguno, traducción_texto: str = Ninguno
     :type text: str
-    :param text_translation: The translated text
     """
     msg = MIMEText('Base text:' + text + ' \n ' +
                    'Translated text:' + text_translation, _charset='UTF-8')
@@ -41,6 +42,6 @@ def sendEmail(text: str = None, text_translation=None):
 
 def closeConnection():
     """
-    It closes the connection to the mail server
+    Cierra la conexión con el servidor de correo.
     """
     __mailserver.quit()
