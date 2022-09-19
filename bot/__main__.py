@@ -1,26 +1,20 @@
-# Importing the os module.
+# Importación de los módulos necesarios.
 import os
-# Importing the URLError class from the urllib.error module.
 from urllib.error import URLError
 
-# Importing the GOOGLE_LANGUAGES_TO_CODES dictionary from the constants.py file.
 from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES
 
-# Importing the verifier function from the sharepoint_credentials.py file.
 from auth.sharepoint_credentials import verifier
-# Importing the connection function from the email_conn.py file.
 from connections.email_conn import connection
-# Importing the connStatus variable from the wifi_status.py file.
 from connections.wifi_status import connStatus
-# Importing the translation function from the text_input.py file.
 from scripts.text_input import translation
 
 
 @verifier
 def main() -> None:
     """
-    If the connection status is false, raise an exception, otherwise, clear the screen, print the
-    languages, and call the connection and translation functions.
+    Si no hay conexión a Internet, genere una excepción; de lo contrario, borra la pantalla, imprime los
+    idiomas, conéctese a la API de Google Translate y traduzca el texto.
     """
     try:
         if not connStatus:
@@ -36,5 +30,4 @@ def main() -> None:
         print(e)
 
 
-# A function that is being called by the `verifier` decorator.
 main()
