@@ -1,0 +1,1 @@
+2022-9-27 10:38:39 [ERROR] = [Errno 13] Permission denied: 'C:\\Users\\dmercado\\OneDrive - GBM Corporacion\\Documents\\Test.xlsx'

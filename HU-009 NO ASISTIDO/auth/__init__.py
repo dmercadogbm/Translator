@@ -1,1 +1,0 @@
-from . import sharepoint_credentials

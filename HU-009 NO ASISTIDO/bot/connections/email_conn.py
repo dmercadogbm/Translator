@@ -22,7 +22,7 @@ def connection():
                        auth.__Username.get_token())
 
 
-def sendEmail(text: str = None, text_translation: str =None):
+def sendEmail():
     """
     Toma dos cadenas como argumentos y envía un correo electrónico al usuario con las dos cadenas como
     cuerpo del correo electrónico.
@@ -30,8 +30,7 @@ def sendEmail(text: str = None, text_translation: str =None):
     :param text: str = Ninguno, traducción_texto: str = Ninguno
     :type text: str
     """
-    msg = MIMEText('Base text:' + text + ' \n ' +
-                   'Translated text:' + text_translation, _charset='UTF-8')
+    msg = MIMEText('TRADUCCION FINALIZADA', _charset='UTF-8')
     msg['Subject'] = 'Translation succefully'
     msg['Message-ID'] = email.utils.make_msgid()
     msg['Date'] = email.utils.formatdate(localtime=1)
