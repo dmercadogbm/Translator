@@ -2,10 +2,14 @@
 import os
 import re
 from datetime import datetime
+from typing import Set
 
 from deep_translator import GoogleTranslator
 #import connections.email_conn as emailConn
 import scripts.excel as excelInfo
+from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES
+from scripts.date import dateYMDHMS, dateYMD
+from connections import setting_conn
 
 
 def translate(text: str, target_leng: str) -> str:
@@ -24,43 +28,41 @@ def translate(text: str, target_leng: str) -> str:
     return (translator.translate(text))
 
 
+def checkAcronyms(target_leng: str) -> None:
+
+    if not target_leng in GOOGLE_LANGUAGES_TO_CODES.values() or not target_leng in GOOGLE_LANGUAGES_TO_CODES.keys():
+        raise ValueError("Idioma no soportado")
+
+
 def translation():
     """
     Pide un idioma, luego pide un texto para traducir, luego traduce el texto y lo envía a un correo
     electrónico
     """
+    setting_conn.setDailyFolder()
     try:
-        now = datetime.now()
-        dateYMD = str(now.year) + "-" + str(now.month) + "-" + str(now.day)
-        dateYMDHMS = dateYMD + " " + str(now.hour) + ":" + str(now.minute) + ":" + str(now.second)
-        df = excelInfo.getTextPath(
-            r'C:\Users\dmercado\OneDrive - GBM Corporacion\Documents\Test.xlsx')
-        doc_name = "ACTION-"+dateYMD+".txt"
-
-        print(df)
+        df = excelInfo.getTextPath(setting_conn.getExcelPath())
 
         for row in df.itertuples():
+            tranlated_path = setting_conn.getParentFolderPath(row.TEXTO)
             name_compiler = re.compile(r'((\w+.txt)+)')
             name_compiled = name_compiler.search(row.TEXTO)
             name_compiled.group(1)
 
-            before_path = row.TEXTO.split("\\")
-            before_path.pop()
-            translated_doc_path = "\\".join(before_path)
+            if row.IDIOMA in GOOGLE_LANGUAGES_TO_CODES.values() or row.IDIOMA in GOOGLE_LANGUAGES_TO_CODES.keys():
+                with open(setting_conn.getActionPath()+setting_conn.doc_name, "a", encoding="utf-8") as action_file:
+                    with open(row.TEXTO, "r", encoding="utf-8") as text_file:
+                        with open(tranlated_path+row.IDIOMA.upper()+"_"+name_compiled.group(1), "a", encoding="utf-8") as text_translation:
+                            for line in text_file:
+                                text_translation.write(
+                                    translate(line, row.IDIOMA)+"\n")
+                            action_file.write(dateYMDHMS(
+                            ) + " [ACTION] = TRANSLATE " + name_compiled.group(1) + " TO " + row.IDIOMA)
+                            action_file.write("\n")
+            else:
+                setting_conn.setErrorMessage("Idioma " + row.IDIOMA +" no sorportado")
 
-            with open("bot/log/action/"+doc_name, "a", encoding="utf-8") as action_file:
-                with open(row.TEXTO, "r", encoding="utf-8") as text_file:
-                    with open(translated_doc_path+"\\traducido-"+row.IDIOMA+"-"+name_compiled.group(1), "a", encoding="utf-8") as text_translation:
-                        for line in text_file:
-                            text_translation.write(
-                                translate(line, row.IDIOMA)+"\n")
-                    action_file.write(dateYMDHMS + " [ACTION] = TRANSLATE ")
-                    action_file.write("\n")
             # sendEmail()
+
     except Exception as e:
-        if e == "cehz --> No support for the provided language.":
-            print("HOLAAAAAAAAAAAAAAA")
-        error_doc_name = "ERROR-"
-        with open("bot/log/error/"+error_doc_name, "a", encoding="utf-8") as error_file:
-            error_file.write(dateYMDHMS + " [ERROR] = " + str(e))
-            error_file.write("\n")
+        setting_conn.setErrorMessage(str(e))

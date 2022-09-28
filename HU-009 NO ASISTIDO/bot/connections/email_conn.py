@@ -18,8 +18,8 @@ def connection():
     """
     __mailserver.ehlo()
     __mailserver.starttls()
-    __mailserver.login(auth.__Username.get_username(),
-                       auth.__Username.get_token())
+    __mailserver.login(auth.sharepoint_auth.get_username(),
+                       auth.sharepoint_auth.get_token())
 
 
 def sendEmail():
