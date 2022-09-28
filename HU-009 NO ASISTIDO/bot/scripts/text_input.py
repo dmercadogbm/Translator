@@ -41,26 +41,34 @@ def translation():
     """
     setting_conn.setDailyFolder()
     try:
-        df = excelInfo.getTextPath(setting_conn.getExcelPath())
+        data = excelInfo.getTextPath(setting_conn.getExcelPath())
 
-        for row in df.itertuples():
-            tranlated_path = setting_conn.getParentFolderPath(row.TEXTO)
+        for idioma, path in data.items():
+            tranlated_path = setting_conn.getParentFolderPath(path)
             name_compiler = re.compile(r'((\w+.txt)+)')
-            name_compiled = name_compiler.search(row.TEXTO)
-            name_compiled.group(1)
+            name_compiled = name_compiler.search(path)
 
-            if row.IDIOMA in GOOGLE_LANGUAGES_TO_CODES.values() or row.IDIOMA in GOOGLE_LANGUAGES_TO_CODES.keys():
+            if idioma in GOOGLE_LANGUAGES_TO_CODES.values() or idioma in GOOGLE_LANGUAGES_TO_CODES.keys():
                 with open(setting_conn.getActionPath()+setting_conn.doc_name, "a", encoding="utf-8") as action_file:
-                    with open(row.TEXTO, "r", encoding="utf-8") as text_file:
-                        with open(tranlated_path+row.IDIOMA.upper()+"_"+name_compiled.group(1), "a", encoding="utf-8") as text_translation:
-                            for line in text_file:
-                                text_translation.write(
-                                    translate(line, row.IDIOMA)+"\n")
-                            action_file.write(dateYMDHMS(
-                            ) + " [ACTION] = TRANSLATE " + name_compiled.group(1) + " TO " + row.IDIOMA)
-                            action_file.write("\n")
+                    if not name_compiled == None:
+                        if name_compiled.group(1).endswith(".txt"):
+                            with open(path, "r", encoding="utf-8") as text_file:
+                                with open(tranlated_path+idioma.upper()+"_"+name_compiled.group(1), "a", encoding="utf-8") as text_translation:
+                                    print()
+                                    for line in text_file:
+                                        text_translation.write(
+                                            translate(line, idioma)+"\n")
+                                    action_file.write(dateYMDHMS(
+                                    ) + " [ACTION] = TRANSLATE " + name_compiled.group(1) + " TO " + idioma)
+                                    action_file.write("\n")
+                        else:
+                            setting_conn.setErrorMessage(
+                                "Extencion del archivo no es .txt")
+                    else:
+                        setting_conn.setErrorMessage("Extencion invalida")
             else:
-                setting_conn.setErrorMessage("Idioma " + row.IDIOMA +" no sorportado")
+                setting_conn.setErrorMessage(
+                    "Idioma " + idioma + " NO sorportado")
 
             # sendEmail()
 
