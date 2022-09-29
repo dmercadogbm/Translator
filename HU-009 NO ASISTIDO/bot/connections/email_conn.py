@@ -22,7 +22,7 @@ def connection():
                        auth.sharepoint_auth.get_token())
 
 
-def sendEmail():
+def sendEmail(status: str, text: str):
     """
     Toma dos cadenas como argumentos y envía un correo electrónico al usuario con las dos cadenas como
     cuerpo del correo electrónico.
@@ -30,11 +30,11 @@ def sendEmail():
     :param text: str = Ninguno, traducción_texto: str = Ninguno
     :type text: str
     """
-    msg = MIMEText('TRADUCCION FINALIZADA', _charset='UTF-8')
-    msg['Subject'] = 'Translation succefully'
+    msg = MIMEText(text, _charset='UTF-8')
+    msg['Subject'] = status
     msg['Message-ID'] = email.utils.make_msgid()
     msg['Date'] = email.utils.formatdate(localtime=1)
-    msg['From'] = auth.__Username.get_username()
+    msg['From'] = auth.sharepoint_auth.get_username()
     msg['To'] = __user+"@gbm.net"
     __mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
 

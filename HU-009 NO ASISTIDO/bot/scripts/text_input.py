@@ -3,7 +3,7 @@ import os
 import re
 from datetime import datetime
 from typing import Set
-
+from connections.email_conn import sendEmail
 from deep_translator import GoogleTranslator
 #import connections.email_conn as emailConn
 import scripts.excel as excelInfo
@@ -47,30 +47,35 @@ def translation():
             tranlated_path = setting_conn.getParentFolderPath(path)
             name_compiler = re.compile(r'((\w+.txt)+)')
             name_compiled = name_compiler.search(path)
-
             if idioma in GOOGLE_LANGUAGES_TO_CODES.values() or idioma in GOOGLE_LANGUAGES_TO_CODES.keys():
                 with open(setting_conn.getActionPath()+setting_conn.doc_name, "a", encoding="utf-8") as action_file:
                     if not name_compiled == None:
                         if name_compiled.group(1).endswith(".txt"):
                             with open(path, "r", encoding="utf-8") as text_file:
                                 with open(tranlated_path+idioma.upper()+"_"+name_compiled.group(1), "a", encoding="utf-8") as text_translation:
-                                    print()
                                     for line in text_file:
                                         text_translation.write(
                                             translate(line, idioma)+"\n")
                                     action_file.write(dateYMDHMS(
                                     ) + " [ACTION] = TRANSLATE " + name_compiled.group(1) + " TO " + idioma)
                                     action_file.write("\n")
+                                setting_conn.sendTransactionEmail(
+                                    str(name_compiled.group(1)))
                         else:
                             setting_conn.setErrorMessage(
-                                "Extencion del archivo no es .txt")
+                                setting_conn.getSettingsErrorMessage())
+                            setting_conn.sendErrorEmail(
+                                "Archivo con extension invalida")
                     else:
-                        setting_conn.setErrorMessage("Extencion invalida")
+                        setting_conn.setErrorMessage(
+                            setting_conn.getSettingsErrorMessage())
+                        setting_conn.sendErrorEmail("Archivo No encontrado")
             else:
                 setting_conn.setErrorMessage(
-                    "Idioma " + idioma + " NO sorportado")
-
-            # sendEmail()
-
+                    setting_conn.getSettingsErrorMessage())
+                setting_conn.sendErrorEmail("Idioma No soportado")
+        setting_conn.sendEndEmail()
     except Exception as e:
-        setting_conn.setErrorMessage(str(e))
+        setting_conn.setErrorMessage(e)
+        if setting_conn.getSettingsErrorStatus() == "True":
+            sendEmail(setting_conn.getSettingsErrorMessage(), str(e))
