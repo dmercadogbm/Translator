@@ -1,14 +1,11 @@
 # Importando las bibliotecas que se necesitan para que el programa funcione.
-import os
 import re
-from datetime import datetime
-from typing import Set
 from connections.email_conn import sendEmail
 from deep_translator import GoogleTranslator
 #import connections.email_conn as emailConn
 import scripts.excel as excelInfo
 from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES
-from scripts.date import dateYMDHMS, dateYMD
+from scripts.date import dateYMDHMS
 from connections import setting_conn
 
 
@@ -39,7 +36,6 @@ def translation():
     Pide un idioma, luego pide un texto para traducir, luego traduce el texto y lo envía a un correo
     electrónico
     """
-    setting_conn.setDailyFolder()
     try:
         data = excelInfo.getTextPath(setting_conn.getExcelPath())
 

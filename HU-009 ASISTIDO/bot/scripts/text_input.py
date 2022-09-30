@@ -4,7 +4,7 @@ import re
 import connections.email_conn as emailConn
 from deep_translator import GoogleTranslator
 from deep_translator.constants import GOOGLE_LANGUAGES_TO_CODES
-
+from connections import setting_conn
 
 def translate(text: str, target_leng: str) -> str:
     """
@@ -95,7 +95,7 @@ def translation():
     Pide un idioma, luego pide un texto para traducir, luego traduce el texto y lo envía a un correo
     electrónico
     """
-
+    
     acro_counter = True
     target_leng = ""
     while acro_counter == True:
@@ -120,7 +120,9 @@ def translation():
                 print(text_tralation)
                 emailConn.sendEmail(text, text_tralation)
             else:
+                setting_conn.sendEndEmail()
                 cicle = False
                 translation()
         except Exception as e:
-            print(e)
+            setting_conn.setErrorMessage(str(e))
+            setting_conn.sendErrorEmail(str(e))

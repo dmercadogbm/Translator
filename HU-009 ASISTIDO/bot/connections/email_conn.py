@@ -1,10 +1,10 @@
 # Importación de las bibliotecas necesarias para enviar un correo electrónico.
 import email.utils
+from fileinput import close
 import os
 import smtplib
 from email.mime.text import MIMEText
-
-import auth.sharepoint_credentials as auth
+from auth.sharepoint_credentials import sharepoint_auth as auth
 
 # Creación de un objeto SMTP.
 __mailserver = smtplib.SMTP('smtp.office365.com', 587)
@@ -18,11 +18,10 @@ def connection():
     """
     __mailserver.ehlo()
     __mailserver.starttls()
-    __mailserver.login(auth.__Username.get_username(),
-                       auth.__Username.get_token())
+    __mailserver.login(auth.get_username(), auth.get_token())
 
 
-def sendEmail(text: str = None, text_translation: str =None):
+def sendEmail(status: str, text: str):
     """
     Toma dos cadenas como argumentos y envía un correo electrónico al usuario con las dos cadenas como
     cuerpo del correo electrónico.
@@ -30,13 +29,12 @@ def sendEmail(text: str = None, text_translation: str =None):
     :param text: str = Ninguno, traducción_texto: str = Ninguno
     :type text: str
     """
-    msg = MIMEText('Base text:' + text + ' \n ' +
-                   'Translated text:' + text_translation, _charset='UTF-8')
-    msg['Subject'] = 'Translation succefully'
+    msg = MIMEText(text, _charset='UTF-8')
+    msg['Subject'] = status
     msg['Message-ID'] = email.utils.make_msgid()
     msg['Date'] = email.utils.formatdate(localtime=1)
-    msg['From'] = auth.__Username.get_username()
-    msg['To'] = __user+"@gbm.net"
+    msg['From'] = auth.get_username()
+    msg['To'] = "dmercado@gbm.net"
     __mailserver.sendmail(msg['From'], msg['To'], msg.as_string())
 
 

@@ -2,7 +2,6 @@ import configparser
 from os import mkdir
 from pathlib import Path
 from scripts.date import dateYMDHMS, dateYMD
-
 from connections.email_conn import sendEmail
 
 
@@ -95,9 +94,9 @@ def sendEndEmail():
         sendEmail(getSettingsEndMessage(), config_reader["NotificationsMessages"]["end_bodymessage"])
 
 
-def sendTransactionEmail(file_name: str):
+def sendTransactionEmail(text, text_tralation):
     if getSettingsTransactionStatus() == "True":
-        sendEmail(getSettingsTransactionMessage(), "documento : " + file_name)
+        sendEmail(getSettingsTransactionMessage(), 'Base text:' + text + ' \n ' +'Translated text:' + text_tralation)
 
 
 def setErrorMessage(message):

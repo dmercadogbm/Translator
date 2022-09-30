@@ -15,7 +15,7 @@ import configparser
 
 class Username:
 
-    def __init__(self, email, token:bytes, key:bytes) -> None:
+    def __init__(self, email, token: bytes, key: bytes) -> None:
         self.email = email
         self.token = token
         self.key = key
@@ -43,20 +43,20 @@ class Username:
 
 
 def init_settings():
-        
-        def parse_url(plain_url:str):
-            return plain_url.replace(" ","%20")
-        script_path = str(pathlib.Path(__file__).parent.resolve()) + "/"
-        configs = configparser.ConfigParser()
-        configs.read(script_path+"settings.ini")
-        base_url = parse_url(configs["SharepointCredentials"]["base_url"])
-        folder_url = parse_url(configs["SharepointCredentials"]["folder_url"])
-        file_name = configs["SharepointCredentials"]["file_name"]
-        user = configs["Username"]["email"]
-        token = configs["Username"]["token"].encode("UTF-8")
-        key = configs["Username"]["key"].encode("UTF-8")
-        username = Username(user, token, key)
-        return base_url, folder_url, file_name, username
+
+    def parse_url(plain_url: str):
+        return plain_url.replace(" ", "%20")
+    script_path = str(pathlib.Path(__file__).parent.resolve()) + "/"
+    configs = configparser.ConfigParser()
+    configs.read(script_path+"settings.ini")
+    base_url = parse_url(configs["SharepointCredentials"]["base_url"])
+    folder_url = parse_url(configs["SharepointCredentials"]["folder_url"])
+    file_name = configs["SharepointCredentials"]["file_name"]
+    user = configs["Username"]["email"]
+    token = configs["Username"]["token"].encode("UTF-8")
+    key = configs["Username"]["key"].encode("UTF-8")
+    username = Username(user, token, key)
+    return base_url, folder_url, file_name, username
 
 
 base_url, folder_url, file_name, sharepoint_auth = init_settings()
@@ -104,8 +104,10 @@ def verifier(func, credentials=None):
         else:
             print("Finalizando ejecución...")
         return res
-    
+
     return wrapper
+
+
 
 
 def get_credentials(credentials: str) -> bool:
@@ -174,12 +176,23 @@ def get_passwords_list():
     finally:
         return credentials
 
+__psswrd_list = get_passwords_list()
+
+def auto_verifier(func):
+
+    def wrapper(*args, **kwargs):
+        credentials = kwargs["credentials"]
+        res = None
+        if __isvalid(__psswrd_list, credentials):
+            res = func(*args, **kwargs)
+        return res
+    return wrapper
 
 def upload_file(path_file, relative_path=""):
     """
     Toma una ruta de archivo y una ruta relativa opcional a una carpeta en SharePoint, y carga el
     archivo en esa carpeta.
-    
+
     :param path_file: la ruta al archivo que desea cargar
     :param relative_path: la ruta a la carpeta en la que desea cargar
     :return: El archivo está creado en el sitio de Sharepoint.
@@ -200,7 +213,8 @@ def upload_file(path_file, relative_path=""):
             ctx.load(web)
             ctx.execute_query()
 
-            target_folder = ctx.web.get_folder_by_server_relative_url(folder_path)
+            target_folder = ctx.web.get_folder_by_server_relative_url(
+                folder_path)
             target_folder.upload_file(name, file_content).execute_query()
             return True
     except Exception:
@@ -211,7 +225,7 @@ def upload_folder(startpath):
     """
     Toma la ruta a una carpeta y luego carga todos los archivos y carpetas en esa
     carpeta a la carpeta base de SharePoint 
-    
+
     :param startpath: La ruta a la carpeta que desea cargar
     """
     root_folder = os.path.basename(startpath)
@@ -238,7 +252,7 @@ def add_folder(folder_name, relative_path=""):
     """
     Toma un nombre de carpeta y una ruta relativa a un sitio de SharePoint y crea una carpeta en la ruta
     relativa con el nombre de la carpeta
-    
+
     :param folder_name: El nombre de la carpeta que desea crear
     :param relative_path: La ruta a la carpeta a la que desea agregar la nueva carpeta
     :return: El folder está creado en el sitio de Sharepoint.
@@ -254,7 +268,8 @@ def add_folder(folder_name, relative_path=""):
             web = ctx.web
             ctx.load(web)
             ctx.execute_query()
-            ctx.web.get_folder_by_server_relative_url(folder_path).folders.add(folder_name)
+            ctx.web.get_folder_by_server_relative_url(
+                folder_path).folders.add(folder_name)
             ctx.execute_query()
             return True
     except Exception:
@@ -264,7 +279,7 @@ def add_folder(folder_name, relative_path=""):
 def __isvalid(passwords: list, pswd: str):
     """
     Devuelve True si la contraseña está en la lista de contraseñas y False en caso contrario
-    
+
     :param passwords: lista de contraseñas
     :type passwords: list
     :param pswd: la contraseña para comprobar

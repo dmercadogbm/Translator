@@ -1,0 +1,11 @@
+2022-9-29 15:10:42 [ERROR] = (451, b'5.7.3 STARTTLS is required to send mail [BN9PR03CA0374.namprd03.prod.outlook.com]', 'dmercado@gbm.net')
+2022-9-29 15:15:42 [ERROR] = (451, b'5.7.3 STARTTLS is required to send mail [BN8PR04CA0002.namprd04.prod.outlook.com]', 'dmercado@gbm.net')
+2022-9-29 15:17:45 [ERROR] = (451, b'5.7.3 STARTTLS is required to send mail [BN8PR16CA0033.namprd16.prod.outlook.com]', 'dmercado@gbm.net')
+2022-9-29 15:21:50 [ERROR] = (451, b'5.7.3 STARTTLS is required to send mail [BN9PR03CA0380.namprd03.prod.outlook.com]', 'dmercado@gbm.net')
+2022-9-29 15:44:32 [ERROR] = (451, b'5.7.3 STARTTLS is required to send mail [BN9PR03CA0043.namprd03.prod.outlook.com]', 'dmercado@gbm.net')
+2022-9-29 16:15:6 [ERROR] = please run connect() first
+2022-9-29 16:15:12 [ERROR] = please run connect() first
+2022-9-29 16:16:38 [ERROR] = please run connect() first
+2022-9-29 16:18:52 [ERROR] = please run connect() first
+2022-9-29 16:19:32 [ERROR] = please run connect() first
+2022-9-29 16:20:4 [ERROR] = please run connect() first
