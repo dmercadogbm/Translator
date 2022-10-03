@@ -107,3 +107,4 @@ def setErrorMessage(message):
             action_file.write("\n")
             error_file.write(dateYMDHMS() + " [ERROR] = " + str(message))
             error_file.write("\n")
+

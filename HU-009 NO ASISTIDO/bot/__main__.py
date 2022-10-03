@@ -7,7 +7,7 @@ from connections.wifi_status import connStatus
 from scripts.text_input import translation
 
 @auto_verifier
-def main(credencial = None) -> None:
+def main(credentials = None) -> None:
     try:
         setting_conn.setLogFolder()
         setting_conn.setDailyFolder()
@@ -18,8 +18,8 @@ def main(credencial = None) -> None:
             setting_conn.sendStartEmail()
             translation()
             closeConnection()
-    except Exception as e:
-        setting_conn.setErrorMessage(str(e))
+    except:
+        setting_conn.sendErrorEmail("error_message")
 
 
-main()
+main(credentials = setting_conn.getCredentials())
